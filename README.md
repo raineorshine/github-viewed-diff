@@ -1,17 +1,15 @@
-# github-fast-merge
+# github-viewed-diff
 
-A Chrome extension that merges GitHub PRs with a single keyboard shortcut.
+A Chrome extension that toggles the **Viewed** button on GitHub pull request diffs with a keyboard shortcut.
 
 ## What it does
 
-Press **Cmd+Shift+M** (Mac) or **Ctrl+Shift+M** (Windows/Linux) on any GitHub PR page to:
+On a GitHub PR **Files changed** page:
 
-1. Verify all checks have passed
-2. Tick the bypass rules checkbox (if present)
-3. Click the merge button
-4. Confirm the merge
+- Press **`v`** to mark the next unviewed file as viewed.
+- Press **`Shift`+`v`** to un-mark the last viewed file.
 
-A toast notification reports success or the reason it stopped.
+The shortcut is ignored while typing in an input, textarea, or other editable field.
 
 ## Install
 

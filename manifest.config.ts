@@ -8,11 +8,6 @@ export default defineManifest({
   icons: {
     48: 'public/logo.png',
   },
-  options_ui: {
-    page: 'src/options/index.html',
-    open_in_tab: true,
-  },
-  permissions: ['storage'],
   content_scripts: [
     {
       js: ['src/content/main.ts'],

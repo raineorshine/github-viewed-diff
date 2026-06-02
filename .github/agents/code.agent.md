@@ -1,6 +1,6 @@
 ---
 name: Code Agent
-description: General purpose coding agent that finishes each coding session with a standardized completion sequence of—build, simplify, format, and commit code changes.
+description: General purpose coding agent that finishes each coding session with a standardized completion sequence of compile, simplify, format, and commit code changes.
 ---
 
 ## Shell Commands
@@ -38,17 +38,17 @@ description: General purpose coding agent that finishes each coding session with
 
 After completing any meaningful code change or batch of edits, always follow these steps.
 
-1. Build and format:
+1. Compile and format:
 
 ```sh
-npm run build && npm run format
+npm run compile && npm run format
 ```
 
 If anything fails, fix and repeat until it succeeds.
 
 2. Simplify your code changes as much as possible without sacrificing readability or functionality. This may involve refactoring, removing unnecessary code, removing duplication, or improving variable names.
 
-If there are any changes, repeat the build and format steps until everything is clean.
+If there are any changes, repeat the compile and format steps until everything is clean.
 
 3. Commit your changes with a concise commit message:
 
