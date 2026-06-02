@@ -1,0 +1,21 @@
+{
+  "name": "github-viewed-diff",
+  "description": "A Chrome extension that toggles the Viewed button on GitHub pull requests using a keyboard shortcut.",
+  "type": "module",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "format": "prettier --write ."
+  },
+  "devDependencies": {
+    "@crxjs/vite-plugin": "^2.4.0",
+    "@trivago/prettier-plugin-sort-imports": "^6.0.2",
+    "@types/chrome": "^0.1.37",
+    "@types/node": "^25.5.0",
+    "prettier": "^3.8.3",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.0",
+    "vite-plugin-zip-pack": "^1.2.4"
+  }
+}

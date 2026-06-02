@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GitHub Fast Merge — Options</title>
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+        font-size: 14px;
+        line-height: 1.5;
+        color: #1f2328;
+        background: #ffffff;
+        padding: 32px;
+        max-width: 480px;
+      }
+
+      h1 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+
+      .subtitle {
+        color: #636c76;
+        margin-bottom: 28px;
+      }
+
+      .field {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 20px;
+      }
+
+      label {
+        font-weight: 600;
+        font-size: 13px;
+      }
+
+      .hint {
+        font-size: 12px;
+        color: #636c76;
+      }
+
+      .shortcut-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      #shortcut-display {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 6px 10px;
+        border: 1px solid #d0d7de;
+        border-radius: 6px;
+        background: #f6f8fa;
+        font-size: 13px;
+        min-width: 160px;
+        min-height: 32px;
+      }
+
+      kbd {
+        display: inline-block;
+        padding: 1px 5px;
+        font-family:
+          ui-monospace,
+          SFMono-Regular,
+          SF Mono,
+          Menlo,
+          Consolas,
+          monospace;
+        font-size: 12px;
+        line-height: 20px;
+        color: #1f2328;
+        background: #ffffff;
+        border: 1px solid #d0d7de;
+        border-radius: 4px;
+        box-shadow: inset 0 -1px 0 #d0d7de;
+      }
+
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        padding: 5px 12px;
+        font-size: 13px;
+        font-weight: 500;
+        line-height: 20px;
+        border-radius: 6px;
+        border: 1px solid;
+        cursor: pointer;
+        white-space: nowrap;
+      }
+
+      .btn-secondary {
+        color: #24292f;
+        background: #f6f8fa;
+        border-color: rgba(31, 35, 40, 0.15);
+      }
+      .btn-secondary:hover {
+        background: #f3f4f6;
+      }
+
+      .btn-primary {
+        color: #ffffff;
+        background: #1f883d;
+        border-color: rgba(31, 35, 40, 0.15);
+      }
+      .btn-primary:hover {
+        background: #1a7f37;
+      }
+      .btn-primary:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .btn-danger {
+        color: #cf222e;
+        background: #f6f8fa;
+        border-color: rgba(31, 35, 40, 0.15);
+      }
+      .btn-danger:hover {
+        background: #fff8f0;
+        border-color: #cf222e;
+      }
+
+      #record-btn.recording {
+        color: #cf222e;
+        background: #fff0f0;
+        border-color: #cf222e;
+      }
+
+      .status {
+        font-size: 12px;
+        color: #1a7f37;
+        height: 16px;
+      }
+      .status.error {
+        color: #cf222e;
+      }
+
+      .actions {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>GitHub Fast Merge</h1>
+    <p class="subtitle">Keyboard shortcut to trigger fast merge on any PR page.</p>
+
+    <div class="field">
+      <label for="shortcut-display">Keyboard shortcut</label>
+      <div class="shortcut-row">
+        <div id="shortcut-display"></div>
+        <button id="record-btn" class="btn btn-secondary">Record</button>
+        <button id="reset-btn" class="btn btn-danger">Reset</button>
+      </div>
+      <span class="hint">
+        Click <strong>Record</strong>, then press your desired key combination. Must include at least one modifier key
+        (Ctrl, Alt, Shift, or ⌘).
+      </span>
+    </div>
+
+    <div class="actions">
+      <button id="save-btn" class="btn btn-primary" disabled>Save</button>
+      <span id="status" class="status"></span>
+    </div>
+
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>
