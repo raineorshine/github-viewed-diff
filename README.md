@@ -6,10 +6,16 @@ A Chrome extension that toggles the **Viewed** button on GitHub pull request dif
 
 On a GitHub PR **Files changed** page:
 
-- Press **`v`** to mark the next unviewed file as viewed.
-- Press **`Shift`+`v`** to un-mark the last viewed file.
+| Shortcut          | Action                                                                                                   |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| `v`               | Mark the first unviewed file in the viewport as viewed, then scroll it to the top.                       |
+| `Shift`+`v`       | Un-mark the first viewed file in the viewport.                                                           |
+| `n`               | Scroll the next unviewed file to the top without marking it.                                             |
+| `Esc`             | Collapse the currently focused file (defers to GitHub's own `Esc` handling, e.g. closing Submit review). |
+| `Cmd`+`z`         | Undo the last check.                                                                                     |
+| `Cmd`+`Shift`+`z` | Redo the last check.                                                                                     |
 
-The shortcut is ignored while typing in an input, textarea, or other editable field.
+The shortcuts are ignored while typing in an input, textarea, or other editable field.
 
 ## Local Development
 
