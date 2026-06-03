@@ -79,29 +79,9 @@ function isInViewport(btn: HTMLButtonElement): boolean {
   return rect.bottom > stickyOffset() && rect.top < window.innerHeight
 }
 
-const DIFF_ENTRY_SELECTOR = '[class*="PullRequestDiffsList-module__diffEntry"]'
-
-/** Whether the file pinned to the top of the viewport is already checked. */
-function isStuckFileChecked(): boolean {
-  const stickyLine = stickyOffset()
-  const stuck = viewedButtons().find(btn => {
-    const entry = btn.closest<HTMLElement>(DIFF_ENTRY_SELECTOR)
-    if (!entry) return false
-    const rect = entry.getBoundingClientRect()
-    return rect.top <= stickyLine && rect.bottom > stickyLine
-  })
-  return stuck ? isChecked(stuck) : false
-}
-
-/**
- * Mark a file as viewed, then scroll it to the top. Targets the second
- * unchecked file visible in the viewport so the topmost already-reviewed file
- * scrolls away. When only one is visible, or the file stuck to the top is
- * already checked, targets the first unchecked file instead.
- */
+/** Mark the first unchecked file visible in the viewport as viewed. */
 function checkNext() {
-  const visibleUnchecked = viewedButtons().filter(btn => !isChecked(btn) && isInViewport(btn))
-  const target = isStuckFileChecked() ? visibleUnchecked[0] : (visibleUnchecked[1] ?? visibleUnchecked[0])
+  const target = viewedButtons().find(btn => !isChecked(btn) && isInViewport(btn))
   if (!target) return
   recordCheck(target)
   target.click()
@@ -116,14 +96,9 @@ function scrollToNext() {
   if (next) scrollHeaderToTop(next)
 }
 
-/**
- * Unmark a viewed file in the viewport, mirroring the targeting used by
- * `checkNext`: the second checked file visible in the viewport, falling back to
- * the first when only one is visible or the file stuck to the top is unchecked.
- */
+/** Unmark the first viewed file visible in the viewport, mirroring `checkNext`. */
 function uncheckInViewport() {
-  const visibleChecked = viewedButtons().filter(btn => isChecked(btn) && isInViewport(btn))
-  const target = isStuckFileChecked() ? (visibleChecked[1] ?? visibleChecked[0]) : visibleChecked[0]
+  const target = viewedButtons().find(btn => isChecked(btn) && isInViewport(btn))
   if (!target) return
   target.click()
   requestAnimationFrame(() => requestAnimationFrame(() => scrollHeaderToTop(target)))
