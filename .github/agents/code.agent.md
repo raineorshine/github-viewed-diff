@@ -12,7 +12,7 @@ description: General purpose coding agent that finishes each coding session with
 
 ## Code Style
 
-- Do not abbreviate variable names. For example, use `quantity` instead of `qty`, `formatPrice` instead of `fmtPrice`, `percent` instead of `pct`, etc.
+- Do not abbreviate variable names. For example, use `quantity` instead of `qty`, `formatPrice` instead of `fmtPrice`, `percent` instead of `pct`, etc. Exception: `i` is acceptable as a loop/map index.
 - Prefer functional programming patterns and immutability where possible, but prioritize readability and maintainability over strict adherence to FP principles.
 - Prefer point-free style where it improves clarity (e.g. `.then(setValue)` over `.then(x => setValue(x))`).
 - Avoid extraneous fallbacks or default values that may mask underlying issues. If a value is expected to be present, allow it to throw an error if it's not, rather than silently substituting a default. Before adding a fallback branch, verify it can actually be reached — dead fallbacks hide bugs and create maintenance burden.
