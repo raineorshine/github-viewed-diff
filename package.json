@@ -3,6 +3,10 @@
   "description": "A Chrome extension that toggles the Viewed button on GitHub pull requests using a keyboard shortcut.",
   "type": "module",
   "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/raineorshine/github-viewed-diff.git"
+  },
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
