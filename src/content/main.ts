@@ -25,14 +25,40 @@ function scrollHeaderToTop(btn: HTMLButtonElement) {
   window.scrollTo({ top: top - stickyOffset(), behavior: 'smooth' })
 }
 
-/** Mark the next unchecked file as viewed, then scroll it to the top. */
+/** Whether the button's diff header is within the vertical viewport bounds. */
+function isInViewport(btn: HTMLButtonElement): boolean {
+  const rect = btn.getBoundingClientRect()
+  return rect.bottom > stickyOffset() && rect.top < window.innerHeight
+}
+
+const DIFF_ENTRY_SELECTOR = '[class*="PullRequestDiffsList-module__diffEntry"]'
+
+/** Whether the file pinned to the top of the viewport is already checked. */
+function isStuckFileChecked(): boolean {
+  const stickyLine = stickyOffset()
+  const stuck = viewedButtons().find(btn => {
+    const entry = btn.closest<HTMLElement>(DIFF_ENTRY_SELECTOR)
+    if (!entry) return false
+    const rect = entry.getBoundingClientRect()
+    return rect.top <= stickyLine && rect.bottom > stickyLine
+  })
+  return stuck ? isChecked(stuck) : false
+}
+
+/**
+ * Mark a file as viewed, then scroll it to the top. Targets the second
+ * unchecked file visible in the viewport so the topmost already-reviewed file
+ * scrolls away. When only one is visible, or the file stuck to the top is
+ * already checked, targets the first unchecked file instead.
+ */
 function checkNext() {
-  const next = viewedButtons().find(btn => !isChecked(btn))
-  if (!next) return
-  next.click()
+  const visibleUnchecked = viewedButtons().filter(btn => !isChecked(btn) && isInViewport(btn))
+  const target = isStuckFileChecked() ? visibleUnchecked[0] : (visibleUnchecked[1] ?? visibleUnchecked[0])
+  if (!target) return
+  target.click()
   // Clicking collapses the diff; wait for the layout to settle before scrolling
   // so the header lands at the correct position instead of just out of view.
-  requestAnimationFrame(() => requestAnimationFrame(() => scrollHeaderToTop(next)))
+  requestAnimationFrame(() => requestAnimationFrame(() => scrollHeaderToTop(target)))
 }
 
 /** Scroll the next unchecked file to the top without marking it viewed. */
