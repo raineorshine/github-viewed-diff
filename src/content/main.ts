@@ -25,6 +25,54 @@ function scrollHeaderToTop(btn: HTMLButtonElement) {
   window.scrollTo({ top: top - stickyOffset(), behavior: 'smooth' })
 }
 
+// Stable identifiers for files, used to track check history across re-renders.
+const DIFF_ID_SELECTOR = '[id^="diff-"]'
+const checkHistory: string[] = []
+const redoStack: string[] = []
+
+/** Stable id of the file a Viewed button belongs to, if any. */
+function diffIdFor(btn: HTMLButtonElement): string | null {
+  return btn.closest<HTMLElement>(DIFF_ID_SELECTOR)?.id ?? null
+}
+
+/** The Viewed button for a given file id, if present in the DOM. */
+function viewedButtonForDiffId(diffId: string): HTMLButtonElement | null {
+  const region = document.getElementById(diffId)
+  return region?.querySelector<HTMLButtonElement>(VIEWED_SELECTOR) ?? null
+}
+
+/** Record a check in history so it can be undone, clearing any redo state. */
+function recordCheck(btn: HTMLButtonElement) {
+  const diffId = diffIdFor(btn)
+  if (!diffId) return
+  checkHistory.push(diffId)
+  redoStack.length = 0
+}
+
+/** Toggle a file's Viewed button to the desired state and scroll it into view. */
+function setViewed(diffId: string, viewed: boolean) {
+  const btn = viewedButtonForDiffId(diffId)
+  if (!btn) return
+  if (isChecked(btn) !== viewed) btn.click()
+  requestAnimationFrame(() => requestAnimationFrame(() => scrollHeaderToTop(btn)))
+}
+
+/** Undo the most recent check, unmarking that file as viewed. */
+function undoCheck() {
+  const diffId = checkHistory.pop()
+  if (!diffId) return
+  redoStack.push(diffId)
+  setViewed(diffId, false)
+}
+
+/** Redo the most recently undone check, re-marking that file as viewed. */
+function redoCheck() {
+  const diffId = redoStack.pop()
+  if (!diffId) return
+  checkHistory.push(diffId)
+  setViewed(diffId, true)
+}
+
 /** Whether the button's diff header is within the vertical viewport bounds. */
 function isInViewport(btn: HTMLButtonElement): boolean {
   const rect = btn.getBoundingClientRect()
@@ -55,6 +103,7 @@ function checkNext() {
   const visibleUnchecked = viewedButtons().filter(btn => !isChecked(btn) && isInViewport(btn))
   const target = isStuckFileChecked() ? visibleUnchecked[0] : (visibleUnchecked[1] ?? visibleUnchecked[0])
   if (!target) return
+  recordCheck(target)
   target.click()
   // Clicking collapses the diff; wait for the layout to settle before scrolling
   // so the header lands at the correct position instead of just out of view.
@@ -147,3 +196,22 @@ document.addEventListener('keydown', (e: KeyboardEvent) => {
   if (isEditing() || escapeOwnedByOverlay()) return
   collapseTargetedFile()
 })
+
+// Undo/redo the check history with Cmd+Z and Cmd+Shift+Z.
+document.addEventListener(
+  'keydown',
+  (e: KeyboardEvent) => {
+    if (e.key.toLowerCase() !== 'z') return
+    if (!e.metaKey || e.ctrlKey || e.altKey) return
+    if (isEditing()) return
+
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.shiftKey) {
+      redoCheck()
+    } else {
+      undoCheck()
+    }
+  },
+  true,
+)
