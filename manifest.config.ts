@@ -18,6 +18,7 @@ function toTitleCase(
 export default defineManifest({
   manifest_version: 3,
   name: toTitleCase(pkg.name),
+  description: pkg.description,
   version: pkg.version,
   icons: {
     48: 'public/logo.png',
