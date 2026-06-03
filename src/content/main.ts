@@ -58,6 +58,38 @@ function isEditing(): boolean {
   )
 }
 
+const TARGETED_FILE_SELECTOR = '[class*="Diff-module__diffTargetable"][data-targeted="true"]'
+const FILE_HEADER_SELECTOR = '[class*="DiffFileHeader-module__diff-file-header"]'
+const OVERLAY_SELECTOR = '[role="dialog"], [aria-modal="true"], dialog[open]'
+
+/** Whether an element is rendered (not hidden via display/visibility/size). */
+function isVisible(element: HTMLElement): boolean {
+  const rect = element.getBoundingClientRect()
+  return rect.width > 0 && rect.height > 0
+}
+
+/**
+ * Whether an overlay (e.g. the Submit review panel) is open and should own the
+ * Escape key. We defer to GitHub's handler in that case. Hidden dialogs that
+ * linger in the DOM (such as the search suggestions dialog) are ignored.
+ */
+function escapeOwnedByOverlay(): boolean {
+  const overlays = document.querySelectorAll<HTMLElement>(OVERLAY_SELECTOR)
+  return Array.from(overlays).some(isVisible)
+}
+
+/** Collapse the currently focused (targeted) file if it is expanded. */
+function collapseTargetedFile(): boolean {
+  const targeted = document.querySelector<HTMLElement>(TARGETED_FILE_SELECTOR)
+  if (!targeted) return false
+  const header = targeted.querySelector<HTMLElement>(FILE_HEADER_SELECTOR)
+  if (!header || header.className.includes('collapsed')) return false
+  const toggle = header.querySelector<HTMLButtonElement>('button')
+  if (!toggle) return false
+  toggle.click()
+  return true
+}
+
 document.addEventListener(
   'keydown',
   (e: KeyboardEvent) => {
@@ -78,3 +110,14 @@ document.addEventListener(
   },
   true,
 )
+
+// Collapse the focused file on Escape. Registered in the bubbling phase without
+// stopping propagation so GitHub's own Escape handling (e.g. closing the Submit
+// review panel) takes precedence.
+document.addEventListener('keydown', (e: KeyboardEvent) => {
+  if (e.key !== 'Escape') return
+  if (e.defaultPrevented) return
+  if (e.ctrlKey || e.metaKey || e.altKey) return
+  if (isEditing() || escapeOwnedByOverlay()) return
+  collapseTargetedFile()
+})
