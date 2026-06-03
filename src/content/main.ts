@@ -116,12 +116,17 @@ function scrollToNext() {
   if (next) scrollHeaderToTop(next)
 }
 
-/** Unmark the last checked file as viewed. */
-function uncheckLast() {
-  const checked = viewedButtons().filter(isChecked)
-  const last = checked[checked.length - 1]
-  last.scrollIntoView({ block: 'center', behavior: 'smooth' })
-  last.click()
+/**
+ * Unmark a viewed file in the viewport, mirroring the targeting used by
+ * `checkNext`: the second checked file visible in the viewport, falling back to
+ * the first when only one is visible or the file stuck to the top is unchecked.
+ */
+function uncheckInViewport() {
+  const visibleChecked = viewedButtons().filter(btn => isChecked(btn) && isInViewport(btn))
+  const target = isStuckFileChecked() ? (visibleChecked[1] ?? visibleChecked[0]) : visibleChecked[0]
+  if (!target) return
+  target.click()
+  requestAnimationFrame(() => requestAnimationFrame(() => scrollHeaderToTop(target)))
 }
 
 function isEditing(): boolean {
@@ -178,7 +183,7 @@ document.addEventListener(
     if (key === 'n') {
       scrollToNext()
     } else if (e.shiftKey) {
-      uncheckLast()
+      uncheckInViewport()
     } else {
       checkNext()
     }
