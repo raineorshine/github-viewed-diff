@@ -34,6 +34,16 @@ description: General purpose coding agent that finishes each coding session with
   }
   ```
 
+## Project Organization
+
+- Treat file and module structure as a design decision. When adding a feature, decide where code belongs before writing it — do not default to appending to an existing file just because it is there.
+- During planning, state the proposed file layout so it can be reviewed before implementation, rather than discovered through refactoring afterward.
+- One module, one responsibility. If a file mixes concerns (e.g. a type contract and an unrelated DOM helper), split them.
+- When there are two or more variants of the same concept (shortcuts, commands, handlers), model them behind a shared contract (interface) with one module per variant, collected by an index/registry. Adding a variant should mean adding a file plus a registry entry, never editing a switch or if-chain.
+- Keep entry points (e.g. `main.ts`) thin: they wire things together and delegate. Business logic lives in dedicated modules.
+- Right-size modules: extract a module when logic is reused or is a distinct concern; inline it when it is a few lines used in one place. Avoid single-use modules that only add an import hop.
+- Co-locate related files in a directory once there are three or more of them. Generic utilities shared across features go in a top-level utility module (e.g. `dom.ts`), not inside a feature folder.
+
 ## Finish Steps
 
 After completing any meaningful code change or batch of edits, always follow these steps.
